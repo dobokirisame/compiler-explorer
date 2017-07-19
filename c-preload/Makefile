@@ -7,7 +7,7 @@ endif
 all: libpreload.so
 
 libpreload.so: preload.c
-	$(CC) -std=c99 -shared -O1 -fPIC $^ -o $@ $(LDL)
+	$(GCC)  -std=c++11 -shared -O3 -fPIC preload.c -o libpreload.so -ldl
 
 .PHONY: test clean
 test: libpreload.so

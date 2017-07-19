@@ -53,12 +53,12 @@ static int allowed_match(const char* path, const char* okpath, const char *denyp
     if (!strncmp(resolved, "/proc/self", 10)) {
         // Leave references to /proc/self.* alone as its real path is different
         // each time.
-    } else {
+	} /*else {
         resolved = realpath(path, resolvedBuf);
         if (resolved == NULL) {
             return 0;
         }
-    }
+	}*/
 
     while (*denypath) {
         const char* end = my_strchrnul(denypath, ':');
@@ -114,7 +114,7 @@ static int allowed(const char* pathname, int flags) {
 
 int open(const char *pathname, int flags, mode_t mode) {
     static int (*real_open)(const char*, int, mode_t) = NULL;
-    if (!real_open) real_open = dlsym(RTLD_NEXT, "open");
+//    if (!real_open) real_open = dlsym(RTLD_NEXT, "open");
 
     if (!allowed(pathname, flags)) {
         return -1;
@@ -125,7 +125,7 @@ int open(const char *pathname, int flags, mode_t mode) {
 
 int creat(const char *pathname, mode_t mode) {
     static int (*real_creat)(const char*, mode_t) = NULL;
-    if (!real_creat) real_creat = dlsym(RTLD_NEXT, "creat");
+//    if (!real_creat) real_creat = dlsym(RTLD_NEXT, "creat");
 
     if (!allowed(pathname, O_CREAT)) {
         return -1;
@@ -136,7 +136,7 @@ int creat(const char *pathname, mode_t mode) {
 
 FILE* fopen(const char* name, const char* mode) {
     static FILE* (*real_fopen)(const char*, const char*) = NULL;
-    if (!real_fopen) real_fopen = dlsym(RTLD_NEXT, "fopen");
+//    if (!real_fopen) real_fopen = dlsym(RTLD_NEXT, "fopen");
 
     if (!allowed(name, (mode[0] == 'r') ? 0 : O_CREAT)) {
         return NULL;
